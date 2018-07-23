@@ -11,7 +11,7 @@ export default {
         };
       } catch (err) {
         console.log(err);
-        return { ok: false, errors: formatErrors(err) };
+        return { ok: false, errors: formatErrors(err, models) };
       }
     }
   }

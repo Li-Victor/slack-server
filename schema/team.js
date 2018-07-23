@@ -9,7 +9,12 @@ export default `
 
   type CreateTeamResponse {
     ok: Boolean!
-    team: Team!
+    team: Team
+    errors: [Error!]
+  }
+
+  type VoidReponse {
+    ok: Boolean!
     errors: [Error!]
   }
 
@@ -19,5 +24,6 @@ export default `
 
   type Mutation {
     createTeam(name: String!): CreateTeamResponse!
+    addTeamMember(email: String!, teamId: Int!): VoidReponse!
   }
 `;
