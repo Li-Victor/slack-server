@@ -6,7 +6,11 @@ export default {
     allTeams: requiresAuth.createResolver(async (parent, args, { models, user }) => {
       const teams = await models.Team.findAll({ where: { owner: user.id } }, { raw: true });
       return teams;
-    })
+    }),
+    inviteTeams: requiresAuth.createResolver(async (parent, args, { models, user }) => models.sequelize.query('SELECT * FROM TEAMS JOIN MEMBERS ON id = team_id WHERE user_id = ?', {
+      replacements: [user.id],
+      model: models.Team
+    }))
   },
 
   Mutation: {
