@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
     });
 
     DirectMessage.belongsTo(models.User, {
-      foreignKey: { name: 'sender', field: 'sender_id' }
+      foreignKey: { name: 'senderId', field: 'sender_id' }
     });
   };
   return DirectMessage;

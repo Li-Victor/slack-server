@@ -87,14 +87,14 @@ models.sequelize.sync({}).then(() => {
           if (token && refreshToken) {
             try {
               const { user } = jwt.verify(token, SECRET);
-              return { models, user };
+              return { user, models };
             } catch (err) {
               const newTokens = await refreshTokens(token, refreshToken, SECRET, SECRET2);
-              return { models, user: newTokens.user };
+              return { user: newTokens.user, models };
             }
           }
 
-          return { models };
+          throw new Error('Missing auth token!');
         }
       },
       {
