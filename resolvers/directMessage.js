@@ -1,6 +1,6 @@
 import { withFilter } from 'graphql-subscriptions';
 
-import requiresAuth from '../permissions';
+import { requiresAuth } from '../permissions';
 import pubsub from '../pubsub';
 
 const NEW_DIRECT_MESSAGE = 'NEW_DIRECT_MESSAGE ';
@@ -58,11 +58,9 @@ export default {
     newDirectMessage: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_DIRECT_MESSAGE),
-        (payload, args, { user }) => (
-          payload.teamId === args.teamId
-            && ((payload.senderId === user.id && payload.receiverId === args.userId)
-              || (payload.senderId === args.userId && payload.receiverId === user.id))
-        )
+        (payload, args, { user }) => payload.teamId === args.teamId
+          && ((payload.senderId === user.id && payload.receiverId === args.userId)
+            || (payload.senderId === args.userId && payload.receiverId === user.id))
       )
     }
   },

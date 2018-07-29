@@ -1,6 +1,6 @@
 import { tryLogin } from '../auth';
 import formatErrors from '../formatErrors';
-import requiresAuth from '../permissions';
+import { requiresAuth } from '../permissions';
 
 export default {
   Query: {
