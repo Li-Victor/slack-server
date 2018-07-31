@@ -50,7 +50,7 @@ export default {
         const channelId = await models.sequelize.transaction(async transaction => {
           const channel = await models.Channel.create(
             {
-              name: 'hello',
+              name,
               public: false,
               dm: true,
               teamId
