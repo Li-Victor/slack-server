@@ -79,8 +79,10 @@ export default {
   Team: {
     channels: ({ id }, args, { models, user }) => models.sequelize.query(
       `SELECT DISTINCT on (id) *
-        FROM channels AS c, pcmembers AS pc
-        WHERE c.team_id = :teamId AND (c.public = true OR (pc.user_id = :userId and c.id = pc.channel_id));`,
+        FROM channels c
+        LEFT OUTER JOIN pcmembers pc
+        ON c.id = pc.channel_id
+        WHERE c.team_id = :teamId AND (c.public = true OR pc.user_id = :userId);`,
       {
         replacements: { teamId: id, userId: user.id },
         model: models.Channel,
