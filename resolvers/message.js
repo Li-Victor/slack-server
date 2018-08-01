@@ -6,23 +6,30 @@ const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 
 export default {
   Query: {
-    messages: requiresAuth.createResolver(async (parent, { channelId }, { models, user }) => {
-      const channel = await models.Channel.findOne({ raw: true, where: { id: channelId } });
+    messages: requiresAuth.createResolver(
+      async (parent, { offset, channelId }, { models, user }) => {
+        const channel = await models.Channel.findOne({ raw: true, where: { id: channelId } });
 
-      if (!channel.public) {
-        const member = await models.PCMember.findOne({
-          raw: true,
-          where: { channelId, userId: user.id }
-        });
+        if (!channel.public) {
+          const member = await models.PCMember.findOne({
+            raw: true,
+            where: { channelId, userId: user.id }
+          });
 
-        if (!member) throw new Error('Not Authorized');
+          if (!member) throw new Error('Not Authorized');
+        }
+
+        return models.Message.findAll(
+          {
+            order: [['created_at', 'ASC']],
+            where: { channelId },
+            limit: 5,
+            offset
+          },
+          { raw: true }
+        );
       }
-
-      return models.Message.findAll(
-        { order: [['created_at', 'ASC']], where: { channelId } },
-        { raw: true }
-      );
-    })
+    )
   },
   Mutation: {
     createMessage: requiresAuth.createResolver(async (parent, args, { models, user }) => {

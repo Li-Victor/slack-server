@@ -8,7 +8,7 @@ export default `
   }
 
   type Query {
-    messages(channelId: Int!): [Message!]!
+    messages(offset: Int!, channelId: Int!): [Message!]!
   }
 
   type Mutation {
