@@ -7,7 +7,7 @@ const NEW_CHANNEL_MESSAGE = 'NEW_CHANNEL_MESSAGE';
 export default {
   Query: {
     messages: requiresAuth.createResolver(
-      async (parent, { offset, channelId }, { models, user }) => {
+      async (parent, { cursor, channelId }, { models, user }) => {
         const channel = await models.Channel.findOne({ raw: true, where: { id: channelId } });
 
         if (!channel.public) {
@@ -19,15 +19,19 @@ export default {
           if (!member) throw new Error('Not Authorized');
         }
 
-        return models.Message.findAll(
-          {
-            order: [['created_at', 'ASC']],
-            where: { channelId },
-            limit: 5,
-            offset
-          },
-          { raw: true }
-        );
+        const options = {
+          order: [['created_at', 'DESC']],
+          where: { channelId },
+          limit: 15
+        };
+
+        if (cursor) {
+          options.where.created_at = {
+            [models.op.lt]: cursor
+          };
+        }
+
+        return models.Message.findAll(options, { raw: true });
       }
     )
   },
